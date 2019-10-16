@@ -42,7 +42,7 @@ namespace API
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("TestJwt"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("TestSupportSystemJwtToken"));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>
                 {
