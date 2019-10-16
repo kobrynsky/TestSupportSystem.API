@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.AspNetCore.Identity;
 
 namespace Domain
 {
-    public class AppUser: IdentityUser
+    public class Course
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
     }
 }
