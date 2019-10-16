@@ -15,10 +15,10 @@ namespace Infrastructure.Security
         private readonly SymmetricSecurityKey _key;
         public JwtGenerator(IConfiguration config)
         {
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Test"));
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("TestJwt"));
         }
 
-        public string CreateToken(User user)
+        public string CreateToken(ApplicationUser user)
         {
             var claims = new List<Claim>
             {

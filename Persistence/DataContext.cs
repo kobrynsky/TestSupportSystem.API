@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
-    public class DataContext: IdentityDbContext<User>
+    public class DataContext: IdentityDbContext<ApplicationUser>
     {
         public DataContext(DbContextOptions options): base(options)
         {
@@ -24,7 +24,7 @@ namespace Persistence
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<User>().HasKey(x => x.Id);
+            builder.Entity<ApplicationUser>().HasKey(x => x.Id);
             builder.Entity<UserGroup>().HasKey(x => new { x.UserId, x.GroupId });
             builder.Entity<ExerciseGroup>().HasKey(x => new { x.ExerciseId, x.GroupId });
             builder.Entity<ExerciseUser>().HasKey(x => new { x.ExerciseId, x.UserId });
