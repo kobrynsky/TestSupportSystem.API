@@ -25,6 +25,7 @@ namespace Application.User
             public string Email { get; set; }
             public string Password { get; set; }
             public string Role { get; set; }
+            public string RolePassword { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -58,6 +59,18 @@ namespace Application.User
 
                 if (await _context.Users.Where(x => x.UserName == request.UserName).AnyAsync())
                     throw new RestException(HttpStatusCode.BadRequest, new { Nick = "Nick już istnieje" });
+
+                if (request.Role == "GlownyProwadzacy")
+                {
+                    if(request.RolePassword == null || request.RolePassword != "GlownyProwadzacy")
+                        throw new RestException(HttpStatusCode.BadRequest, new {RolePassword = "Nieprawidłowe hasło Głównych Prowadzących"});
+                }
+
+                if (request.Role == "Prowadzacy")
+                {
+                    if (request.RolePassword == null || request.RolePassword != "Prowadzacy")
+                        throw new RestException(HttpStatusCode.BadRequest, new { RolePassword = "Nieprawidłowe hasło Prowadzących" });
+                }
 
                 var user = new ApplicationUser()
                 {
