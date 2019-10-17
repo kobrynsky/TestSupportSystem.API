@@ -54,6 +54,9 @@ namespace Application.User
                 if (await _context.Users.Where(x => x.Email == request.Email).AnyAsync())
                     throw new RestException(HttpStatusCode.BadRequest, new { Email = "Email już istnieje" });
 
+                if (await _context.Users.Where(x => x.UserName == request.UserName).AnyAsync())
+                    throw new RestException(HttpStatusCode.BadRequest, new { Nick = "Nick już istnieje" });
+
                 var user = new ApplicationUser()
                 {
                     LastName = request.LastName,
