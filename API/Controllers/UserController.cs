@@ -28,5 +28,14 @@ namespace API.Controllers
         {
             return await Mediator.Send(new CurrentUser.Query());
         }
+
+
+        //endpoint for testing Roles
+        [Authorize(Roles = Role.Student)]
+        [HttpPost("test")]
+        public async Task<ActionResult<User>> Test(Login.Query query)
+        {
+            return await Mediator.Send(new CurrentUser.Query());
+        }
     }
 }
