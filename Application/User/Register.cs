@@ -60,13 +60,13 @@ namespace Application.User
                 if (await _context.Users.Where(x => x.UserName == request.UserName).AnyAsync())
                     throw new RestException(HttpStatusCode.BadRequest, new { Nick = "Nick już istnieje" });
 
-                if (request.Role == "GlownyProwadzacy")
+                if (request.Role == Role.MainLecturer)
                 {
                     if(request.RolePassword == null || request.RolePassword != "GlownyProwadzacy")
                         throw new RestException(HttpStatusCode.BadRequest, new {RolePassword = "Nieprawidłowe hasło Głównych Prowadzących"});
                 }
 
-                if (request.Role == "Prowadzacy")
+                if (request.Role == Role.Lecturer)
                 {
                     if (request.RolePassword == null || request.RolePassword != "Prowadzacy")
                         throw new RestException(HttpStatusCode.BadRequest, new { RolePassword = "Nieprawidłowe hasło Prowadzących" });
