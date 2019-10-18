@@ -9,8 +9,7 @@ using API.Middleware;
 using Domain;
 using Infrastructure.Security;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -23,6 +22,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace API
 {
@@ -71,29 +71,19 @@ namespace API
             identityBuilder.AddSignInManager<SignInManager<ApplicationUser>>();
 
             services.AddMediatR(typeof(Login.Handler).Assembly);
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc(option => option.EnableEndpointRouting = false);
             services.AddScoped<IUserAccessor, UserAccessor>();
-            services.AddScoped<IJwtGenerator, JwtGenerator>();
+            services.AddScoped<IJwtGenerator, JwtGenerator>();   
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseMiddleware<ErrorHandlingMiddleware>();
-
-            if (env.IsDevelopment())
-            {
-//                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                //                app.UseHsts();
-            }
-
-            //            app.UseHttpsRedirection();
-            app.UseAuthentication();
             app.UseCors("MyPolicy");
+            app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseAuthentication();
             app.UseMvc();
         }
     }
