@@ -8,6 +8,7 @@ namespace Domain
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Role { get; set; }
-        public IList<UserGroup> UserGroups { get; set; }
+        public virtual IList<UserGroup> UserGroups { get; set; }
+        public virtual IList<ExerciseUser> ExerciseUsers { get; set; }
     }
 }
