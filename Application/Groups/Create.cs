@@ -1,17 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Courses;
+using Application.Courses.Dtos;
 using Application.Errors;
-using Application.Interfaces;
 using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-namespace Application.Courses
+namespace Application.Groups
 {
     public class Create
     {
@@ -19,6 +22,7 @@ namespace Application.Courses
         {
             public Guid Id { get; set; }
             public string Name { get; set; }
+            public CourseDto Course { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -26,6 +30,7 @@ namespace Application.Courses
             public CommandValidator()
             {
                 RuleFor(x => x.Name).NotEmpty();
+                RuleFor(x => x.Course.Name).NotEmpty();
             }
         }
 
@@ -39,18 +44,24 @@ namespace Application.Courses
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                if (await _context.Courses.Where(x => x.Name == request.Name).AnyAsync())
-                    throw new RestException(HttpStatusCode.BadRequest, new { Nazwa = "Kurs o takiej nazwie już istnieje" });
+                if (await _context.Groups.Where(x => x.Name == request.Name).AnyAsync())
+                    throw new RestException(HttpStatusCode.BadRequest, new { Nazwa = "Grupa o takiej nazwie już istnieje" });
 
-                var course = new Course
+                var course = await _context.Courses.Where(x => x.Name == request.Course.Name).FirstAsync();
+
+                if(course == null)
+                    throw new RestException(HttpStatusCode.BadRequest, new { Kurs = "Nie znaleziono kursu o takiej nazwie"});
+
+                var group = new Group
                 {
                     Id = request.Id,
-                    Name = request.Name
+                    Name = request.Name,
+                    Course = course
                 };
 
-                _context.Courses.Add(course);
+                _context.Groups.Add(group);
 
-                
+
                 var success = await _context.SaveChangesAsync() > 0;
 
                 if (success) return Unit.Value;
