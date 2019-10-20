@@ -16,6 +16,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using AutoMapper;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace API
 {
@@ -64,6 +66,7 @@ namespace API
             identityBuilder.AddSignInManager<SignInManager<ApplicationUser>>();
 
             services.AddMediatR(typeof(Login.Handler).Assembly);
+            services.AddAutoMapper(typeof(Login.Handler));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddMvc(option => option.EnableEndpointRouting = false);
             services.AddScoped<IUserAccessor, UserAccessor>();
