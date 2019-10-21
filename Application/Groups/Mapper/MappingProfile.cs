@@ -9,7 +9,7 @@ namespace Application.Groups.Mapper
     {
         public MappingProfile()
         {
-            CreateMap<ApplicationUser, GroupMemberDto>();
+            CreateMap<ApplicationUser, GroupMemberDto>().ReverseMap();
             CreateMap<Group, GroupDto>()
                 .ForMember(d => d.Members, o => o.MapFrom(s => s.UserGroups.Select(x => x.User)));
         }

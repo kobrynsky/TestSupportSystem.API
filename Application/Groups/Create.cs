@@ -47,7 +47,7 @@ namespace Application.Groups
                 if (await _context.Groups.Where(x => x.Name == request.Name).AnyAsync())
                     throw new RestException(HttpStatusCode.BadRequest, new { Nazwa = "Grupa o takiej nazwie już istnieje" });
 
-                var course = await _context.Courses.Where(x => x.Name == request.Course.Name).FirstAsync();
+                var course = await _context.Courses.Where(x => x.Name == request.Course.Name).FirstOrDefaultAsync();
 
                 if(course == null)
                     throw new RestException(HttpStatusCode.BadRequest, new { Kurs = "Nie znaleziono kursu o takiej nazwie"});

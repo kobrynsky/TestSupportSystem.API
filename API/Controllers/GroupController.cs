@@ -21,9 +21,24 @@ namespace API.Controllers
         }
 
         [AuthorizeRoles(Role.Lecturer, Role.MainLecturer)]
+        [HttpGet]
         public async Task<ActionResult<List<GroupDto>>> List()
         {
             return await Mediator.Send(new List.Query());
+        }
+
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer)]
+        [HttpPost("{groupId}/user/{userId}")]
+        public async Task<ActionResult<Unit>> AddMembers(Guid groupId, string userId)
+        {
+            return await Mediator.Send(new AddMember.Command { GroupId = groupId, UserId = userId });
+        }
+
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer)]
+        [HttpDelete("{groupId}/user/{userId}")]
+        public async Task<ActionResult<Unit>> DeleteMember(Guid groupId, string userId)
+        {
+            return await Mediator.Send(new DeleteMember.Command { GroupId = groupId, UserId = userId });
         }
     }
 }

@@ -54,11 +54,13 @@ namespace Application.User
                     // TODO: generate token
                     return new User
                     {
+                        Id = user.Id,
                         FirstName = user.FirstName,
                         LastName = user.LastName,
                         UserName = user.UserName,
                         Email = user.Email,
                         Token = _jwtGenerator.CreateToken(user),
+                        Role = user.Role,
                     };
                 }
 

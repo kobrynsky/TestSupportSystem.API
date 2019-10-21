@@ -3,6 +3,7 @@ using System.Text;
 using Application.Interfaces;
 using Application.User;
 using API.Middleware;
+using Application.Courses;
 using Domain;
 using Infrastructure.Security;
 using MediatR;
@@ -17,6 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using AutoMapper;
+using FluentValidation.AspNetCore;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace API
@@ -67,7 +69,9 @@ namespace API
 
             services.AddMediatR(typeof(Login.Handler).Assembly);
             services.AddAutoMapper(typeof(Login.Handler));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc()
+                .AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssemblyContaining<Create>())
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddMvc(option => option.EnableEndpointRouting = false);
             services.AddScoped<IUserAccessor, UserAccessor>();
             services.AddScoped<IJwtGenerator, JwtGenerator>();   
