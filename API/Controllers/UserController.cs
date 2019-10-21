@@ -1,5 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using API.Security;
 using Application.User;
+using Application.User.Dtos;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +30,13 @@ namespace API.Controllers
         public async Task<ActionResult<User>> CurrentUser()
         {
             return await Mediator.Send(new CurrentUser.Query());
+        }
+
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer)]
+        [HttpGet("all")]
+        public async Task<ActionResult<List<UserDto>>> List()
+        {
+            return await Mediator.Send(new List.Query());
         }
 
 
