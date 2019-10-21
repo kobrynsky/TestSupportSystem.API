@@ -40,5 +40,12 @@ namespace API.Controllers
         {
             return await Mediator.Send(new DeleteMember.Command { GroupId = groupId, UserId = userId });
         }
+
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer)]
+        [HttpGet("getByName/{name}")]
+        public async Task<ActionResult<GroupDto>> GetByName(string name)
+        {
+            return await Mediator.Send(new GetByName.Query{Name = name});
+        }
     }
 }
