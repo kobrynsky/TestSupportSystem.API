@@ -12,6 +12,8 @@ namespace Application.Groups.Mapper
             CreateMap<ApplicationUser, GroupMemberDto>().ReverseMap();
             CreateMap<Group, GroupDto>()
                 .ForMember(d => d.Members, o => o.MapFrom(s => s.UserGroups.Select(x => x.User)));
+            CreateMap<Group, GroupDetailsDto>()
+                .ForMember(d => d.Members, o => o.MapFrom(s => s.UserGroups.Select(x => x.User)));
         }
     }
 }

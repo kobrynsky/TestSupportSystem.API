@@ -47,5 +47,12 @@ namespace API.Controllers
         {
             return await Mediator.Send(new GetByName.Query{Name = name});
         }
+
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer)]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<GroupDetailsDto>> Get(Guid id)
+        {
+            return await Mediator.Send(new Get.Query { Id = id });
+        }
     }
 }
