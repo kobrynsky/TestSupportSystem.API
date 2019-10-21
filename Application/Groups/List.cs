@@ -45,7 +45,11 @@ namespace Application.Groups
 
             public async Task<List<GroupDto>> Handle(List.Query request, CancellationToken cancellationToken)
             {
-                var groups = await _context.Groups.Include(x => x.UserGroups).ThenInclude(y => y.User).ToListAsync();
+                var groups = await _context.Groups
+                    .Include(x => x.Course)
+                    .Include(x => x.UserGroups)
+                    .ThenInclude(y => y.User)
+                    .ToListAsync();
                 return _mapper.Map<List<GroupDto>>(groups);
             }
         }
