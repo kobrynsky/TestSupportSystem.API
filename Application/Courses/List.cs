@@ -21,17 +21,6 @@ namespace Application.Courses
     {
         public class Query : IRequest<List<CourseDto>>
         {
-            public int Id { get; set; }
-            public string Name { get; set; }
-        }
-
-        public class QueryValidator : AbstractValidator<Query>
-        {
-            public QueryValidator()
-            {
-                RuleFor(x => x.Id).NotEmpty();
-                RuleFor(x => x.Name).NotEmpty();
-            }
         }
 
         public class Handler : IRequestHandler<Query, List<CourseDto>>
