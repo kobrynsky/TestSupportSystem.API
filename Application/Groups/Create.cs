@@ -30,7 +30,7 @@ namespace Application.Groups
             public CommandValidator()
             {
                 RuleFor(x => x.Name).NotEmpty();
-                RuleFor(x => x.Course.Name).NotEmpty();
+                RuleFor(x => x.Course.Id).NotEmpty();
             }
         }
 
@@ -47,10 +47,10 @@ namespace Application.Groups
                 if (await _context.Groups.Where(x => x.Name == request.Name).AnyAsync())
                     throw new RestException(HttpStatusCode.BadRequest, new { Nazwa = "Grupa o takiej nazwie już istnieje" });
 
-                var course = await _context.Courses.Where(x => x.Name == request.Course.Name).FirstOrDefaultAsync();
+                var course = await _context.Courses.Where(x => x.Id == request.Course.Id).FirstOrDefaultAsync();
 
                 if(course == null)
-                    throw new RestException(HttpStatusCode.BadRequest, new { Kurs = "Nie znaleziono kursu o takiej nazwie"});
+                    throw new RestException(HttpStatusCode.BadRequest, new { Kurs = "Nie znaleziono kursu"});
 
                 var group = new Group
                 {
