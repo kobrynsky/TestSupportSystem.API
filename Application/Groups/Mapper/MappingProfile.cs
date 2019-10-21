@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Application.Groups.Dtos;
 using AutoMapper;
 using Domain;
 
-namespace Application.Groups
+namespace Application.Groups.Mapper
 {
     public class MappingProfile: Profile
     {
