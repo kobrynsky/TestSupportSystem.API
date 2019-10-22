@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Courses.Dtos;
 using Application.Errors;
-using Application.Groups.Dtos;
 using AutoMapper;
-using Castle.Core.Internal;
 using Domain;
 using FluentValidation;
 using MediatR;

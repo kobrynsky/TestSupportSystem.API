@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Application.User.Dtos
+﻿namespace Application.User.Dtos
 {
     public class UserDto
     {

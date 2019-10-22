@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Exercises.Dtos;
 using Application.Groups.Dtos;
 using AutoMapper;
 using MediatR;

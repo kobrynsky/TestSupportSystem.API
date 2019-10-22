@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Application.Exercises.Dtos;
+﻿using Application.Exercises.Dtos;
 using AutoMapper;
 using Domain;
 
