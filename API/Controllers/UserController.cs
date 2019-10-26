@@ -32,7 +32,7 @@ namespace API.Controllers
             return await Mediator.Send(new CurrentUser.Query());
         }
 
-        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer)]
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
         [HttpGet("all")]
         public async Task<ActionResult<List<UserDto>>> List()
         {
