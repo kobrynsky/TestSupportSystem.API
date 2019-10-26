@@ -123,11 +123,6 @@ namespace Persistence.Migrations
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Courses_MainLecturerId",
-                table: "Courses",
-                column: "MainLecturerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CourseMainLecturers_CourseId",
                 table: "CourseMainLecturers",
                 column: "CourseId");
@@ -224,10 +219,6 @@ namespace Persistence.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_Exercises_AuthorId",
                 table: "Exercises");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Courses_MainLecturerId",
-                table: "Courses");
 
             migrationBuilder.DropColumn(
                 name: "Id",

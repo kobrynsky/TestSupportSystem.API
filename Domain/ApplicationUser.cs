@@ -13,9 +13,6 @@ namespace Domain
         public virtual IList<UserGroup> UserGroups { get; set; }
         public virtual IList<ExerciseUser> ExerciseStudents { get; set; }
         public virtual IList<ExerciseUser> ExerciseLecturers { get; set; }
-
-        public Guid MainLecturerCourseId { get; set; }
-        [ForeignKey("MainLecturerCourseId")]
-        public virtual Course MainLecturerCourse { get; set; }
+        public virtual IList<CourseMainLecturer> CourseMainLecturers { get; set; }
     }
 }

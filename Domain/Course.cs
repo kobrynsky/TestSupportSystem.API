@@ -8,10 +8,7 @@ namespace Domain
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-
-        public string MainLecturerId { get; set; }
-        [ForeignKey("MainLecturerId")]
-        public virtual ApplicationUser MainLecturer { get; set; }
         public virtual IList<Group> Groups { get; set; }
+        public virtual IList<CourseMainLecturer> CourseMainLecturers { get; set; }
     }
 }
