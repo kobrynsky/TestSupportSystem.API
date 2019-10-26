@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Errors;
@@ -8,6 +9,7 @@ using Application.Interfaces;
 using Application.Validators;
 using Domain;
 using FluentValidation;
+using FluentValidation.Validators;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +39,7 @@ namespace Application.User
                 RuleFor(x => x.Email).NotEmpty().EmailAddress();
                 RuleFor(x => x.Password).Password();
                 RuleFor(x => x.Role).NotEmpty();
+                RuleFor(x => x.UserName).NotEmpty();
             }
         }
 
@@ -45,9 +48,12 @@ namespace Application.User
             private readonly DataContext _context;
             private readonly UserManager<ApplicationUser> _userManager;
             private readonly IJwtGenerator _jwtGenerator;
-            public Handler(DataContext context, UserManager<ApplicationUser> userManager, IJwtGenerator jwtGenerator)
+            private readonly IUserAccessor _userAccessor;
+
+            public Handler(DataContext context, UserManager<ApplicationUser> userManager, IJwtGenerator jwtGenerator, IUserAccessor userAccessor)
             {
                 _jwtGenerator = jwtGenerator;
+                _userAccessor = userAccessor;
                 _userManager = userManager;
                 _context = context;
             }
@@ -60,16 +66,16 @@ namespace Application.User
                 if (await _context.Users.Where(x => x.UserName == request.UserName).AnyAsync())
                     throw new RestException(HttpStatusCode.BadRequest, new { Nick = "Nick już istnieje" });
 
-                if (request.Role == Role.MainLecturer)
+                if (request.Role == Role.MainLecturer || request.Role == Role.Lecturer || request.Role == Role.Administrator)
                 {
-                    if(request.RolePassword == null || request.RolePassword != "GlownyProwadzacy")
-                        throw new RestException(HttpStatusCode.BadRequest, new {RolePassword = "Nieprawidłowe hasło Głównych Prowadzących"});
-                }
+                    var currentUserName = _userAccessor.GetCurrentUsername();
 
-                if (request.Role == Role.Lecturer)
-                {
-                    if (request.RolePassword == null || request.RolePassword != "Prowadzacy")
-                        throw new RestException(HttpStatusCode.BadRequest, new { RolePassword = "Nieprawidłowe hasło Prowadzących" });
+                    if (currentUserName == null)
+                        throw new RestException(HttpStatusCode.Unauthorized, new { Role = "Brak uprawnień do rejestracji konta z taką rolą" });
+
+                    var currentUser = await _userManager.FindByNameAsync(_userAccessor.GetCurrentUsername());
+                    if (currentUser == null || currentUser.Role != Role.Administrator)
+                        throw new RestException(HttpStatusCode.Unauthorized, new { Role = "Brak uprawnień do rejestracji konta z taką rolą" });
                 }
 
                 var user = new ApplicationUser()

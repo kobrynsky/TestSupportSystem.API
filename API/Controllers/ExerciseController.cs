@@ -12,14 +12,14 @@ namespace API.Controllers
 {
     public class ExerciseController: BaseController
     {
-        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer)]
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
         [HttpPost]
         public async Task<ActionResult<Unit>> Create(Create.Command command)
         {
             return await Mediator.Send(command);
         }
 
-        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer)]
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
         [HttpGet]
         public async Task<ActionResult<List<ExerciseDto>>> List()
         {
