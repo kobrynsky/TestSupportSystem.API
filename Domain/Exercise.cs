@@ -21,10 +21,12 @@ namespace Domain
 
         public virtual IList<ExerciseGroup> ExerciseGroups { get; set; }
         public virtual IList<ExerciseUser> ExerciseUsers { get; set; }
+        public virtual IList<ExerciseCourse> ExerciseCourses { get; set; }
 
         public string AuthorId { get; set; }
         [ForeignKey("AuthorId")]
         public virtual ApplicationUser Author { get; set; }
+
 
     }
 }

@@ -10,5 +10,6 @@ namespace Domain
         public string Name { get; set; }
         public virtual IList<Group> Groups { get; set; }
         public virtual IList<CourseMainLecturer> CourseMainLecturers { get; set; }
+        public virtual IList<ExerciseCourse> ExerciseCourses { get; set; }
     }
 }
