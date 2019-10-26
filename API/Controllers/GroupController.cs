@@ -28,7 +28,7 @@ namespace API.Controllers
 
         [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
         [HttpPost("{groupId}/user/{userId}")]
-        public async Task<ActionResult<Unit>> AddMembers(Guid groupId, string userId)
+        public async Task<ActionResult<Unit>> AddMember(Guid groupId, string userId)
         {
             return await Mediator.Send(new AddMember.Command { GroupId = groupId, UserId = userId });
         }
