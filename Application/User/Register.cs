@@ -25,7 +25,7 @@ namespace Application.User
             public string Email { get; set; }
             public string Password { get; set; }
             public string Role { get; set; }
-            public string RolePassword { get; set; }
+            public Guid CourseId { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -86,6 +86,21 @@ namespace Application.User
                 };
 
                 var result = await _userManager.CreateAsync(user, request.Password);
+
+                var course = await _context.Courses.Where(x => x.Id == request.CourseId).FirstOrDefaultAsync();
+
+                if (course != null && request.Role == Role.MainLecturer)
+                {
+                    var courseMainLecturer = new CourseMainLecturer()
+                    {
+                        CourseId = course.Id,
+                        MainLecturerId = user.Id,
+                    };
+
+                    await _context.CourseMainLecturers.AddAsync(courseMainLecturer);
+                    await _context.SaveChangesAsync();
+                }
+
 
                 if (result.Succeeded)
                 {
