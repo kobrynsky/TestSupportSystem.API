@@ -55,9 +55,11 @@ namespace Application.Exercises
                         break;
 
                     case Role.MainLecturer:
-                        if (currentUser.MainLecturerCourse == null)
+                        if (currentUser.CourseMainLecturers == null || !currentUser.CourseMainLecturers.Any())
                             throw new RestException(HttpStatusCode.BadRequest, new { Kursy = "Główny prowadzący nie jest przypisany do żadnego kursu" });
-                        exercises = await _context.Exercises.Where(x => x.CourseId == currentUser.MainLecturerCourseId).ToListAsync();
+
+                        var courseMainLecturers = _context.CourseMainLecturers.Where(x => x.MainLecturerId == currentUser.Id);
+                        exercises = await _context.Exercises.Where(x => courseMainLecturers.Any(y => y.CourseId == x.CourseId)).ToListAsync();
                         break;
 
                     case Role.Lecturer:

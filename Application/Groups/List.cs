@@ -59,10 +59,12 @@ namespace Application.Groups
                         break;
 
                     case Role.MainLecturer:
-                        if (currentUser.MainLecturerCourse == null)
+                        if (currentUser.CourseMainLecturers == null || !currentUser.CourseMainLecturers.Any())
                             throw new RestException(HttpStatusCode.BadRequest, new { Kursy = "Główny prowadzący nie jest przypisany do żadnego kursu" });
 
-                        groups = await _context.Groups.Where(x => x.Course.Id == currentUser.MainLecturerCourse.Id)
+                        var courseMainLecturers = _context.CourseMainLecturers.Where(x => x.MainLecturerId == currentUser.Id);
+
+                        groups = await _context.Groups.Where(x => courseMainLecturers.Any(y => y.CourseId == x.CourseId))
                             .Include(x => x.Course)
                             .Include(x => x.UserGroups)
                             .ThenInclude(y => y.User)
