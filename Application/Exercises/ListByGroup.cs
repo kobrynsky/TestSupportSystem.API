@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Errors;
 using Application.Exercises.Dtos;
-using Application.Groups.Dtos;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

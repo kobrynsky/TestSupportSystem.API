@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Domain;
+﻿using Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

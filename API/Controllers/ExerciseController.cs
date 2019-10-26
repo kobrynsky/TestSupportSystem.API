@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Security;
+using Application.Exercises;
 using Application.Exercises.Dtos;
-using Application.Groups;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

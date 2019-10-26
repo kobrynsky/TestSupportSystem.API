@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Errors;
@@ -9,7 +8,6 @@ using Application.Interfaces;
 using Application.Validators;
 using Domain;
 using FluentValidation;
-using FluentValidation.Validators;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

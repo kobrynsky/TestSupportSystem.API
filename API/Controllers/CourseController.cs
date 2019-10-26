@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using API.Security;
 using Application.Courses;
 using Application.Courses.Dtos;
-using Application.Groups;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
