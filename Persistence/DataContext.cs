@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using System.Security.Cryptography.X509Certificates;
+using Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,7 @@ namespace Persistence
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<ExerciseGroup> ExerciseGroups { get; set; }
         public DbSet<ExerciseUser> ExerciseUsers { get; set; }
+        public DbSet<CourseMainLecturer> CourseMainLecturers { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -26,7 +28,6 @@ namespace Persistence
             builder.Entity<ApplicationUser>().HasKey(x => x.Id);
             builder.Entity<UserGroup>().HasKey(x => new { x.UserId, x.GroupId });
             builder.Entity<ExerciseGroup>().HasKey(x => new { x.ExerciseId, x.GroupId });
-            builder.Entity<ExerciseUser>().HasKey(x => new { x.ExerciseId, x.UserId });
             builder.Entity<Group>()
                 .HasOne<Course>(x => x.Course)
                 .WithMany(x => x.Groups)
@@ -49,8 +50,16 @@ namespace Persistence
                 .HasForeignKey(x => x.GroupId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<ApplicationUser>().HasMany(x => x.ExerciseUsers).WithOne(x => x.User)
-                .HasForeignKey(x => x.UserId)
+            builder.Entity<ExerciseUser>()
+                .HasOne(x => x.Student)
+                .WithMany(x => x.ExerciseStudents)
+                .HasForeignKey(x => x.StudentId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<ExerciseUser>()
+                .HasOne(x => x.Lecturer)
+                .WithMany(x => x.ExerciseLecturers)
+                .HasForeignKey(x => x.LecturerId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Exercise>().HasMany(x => x.ExerciseUsers).WithOne(x => x.Exercise)

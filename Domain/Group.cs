@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain
 {
@@ -14,6 +15,7 @@ namespace Domain
         public virtual IList<ExerciseGroup> ExerciseGroups { get; set; }
 
         public Guid CourseId { get; set; }
+        [ForeignKey("CourseId")]
         public virtual Course Course { get; set; }
     }
 }
