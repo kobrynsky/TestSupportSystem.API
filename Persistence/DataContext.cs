@@ -19,7 +19,6 @@ namespace Persistence
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<ExerciseGroup> ExerciseGroups { get; set; }
         public DbSet<ExerciseUser> ExerciseUsers { get; set; }
-        public DbSet<CourseMainLecturer> CourseMainLecturers { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

@@ -50,6 +50,9 @@ namespace Persistence.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<Guid>("MainLecturerCourseId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("NormalizedEmail")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
@@ -82,6 +85,8 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MainLecturerCourseId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
 
@@ -107,30 +112,11 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MainLecturerId");
+                    b.HasIndex("MainLecturerId")
+                        .IsUnique()
+                        .HasFilter("[MainLecturerId] IS NOT NULL");
 
                     b.ToTable("Courses");
-                });
-
-            modelBuilder.Entity("Domain.CourseMainLecturer", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CourseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("MainLecturerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasIndex("MainLecturerId");
-
-                    b.ToTable("CourseMainLecturers");
                 });
 
             modelBuilder.Entity("Domain.Exercise", b =>
@@ -405,24 +391,20 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Domain.ApplicationUser", b =>
+                {
+                    b.HasOne("Domain.Course", "MainLecturerCourse")
+                        .WithMany()
+                        .HasForeignKey("MainLecturerCourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Domain.Course", b =>
                 {
                     b.HasOne("Domain.ApplicationUser", "MainLecturer")
-                        .WithMany()
-                        .HasForeignKey("MainLecturerId");
-                });
-
-            modelBuilder.Entity("Domain.CourseMainLecturer", b =>
-                {
-                    b.HasOne("Domain.Course", "Course")
-                        .WithMany()
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.ApplicationUser", "MainLecturer")
-                        .WithMany()
-                        .HasForeignKey("MainLecturerId");
+                        .WithOne()
+                        .HasForeignKey("Domain.Course", "MainLecturerId");
                 });
 
             modelBuilder.Entity("Domain.Exercise", b =>

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
 namespace Domain
@@ -11,5 +13,9 @@ namespace Domain
         public virtual IList<UserGroup> UserGroups { get; set; }
         public virtual IList<ExerciseUser> ExerciseStudents { get; set; }
         public virtual IList<ExerciseUser> ExerciseLecturers { get; set; }
+
+        public Guid MainLecturerCourseId { get; set; }
+        [ForeignKey("MainLecturerCourseId")]
+        public virtual Course MainLecturerCourse { get; set; }
     }
 }
