@@ -34,6 +34,13 @@ namespace API.Controllers
         }
 
         [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
+        [HttpPost("{groupId}/userEmail/{userEmail}")]
+        public async Task<ActionResult<Unit>> AddMemberByEmail(Guid groupId, string email)
+        {
+            return await Mediator.Send(new AddMemberByEmail.Command { GroupId = groupId, Email = email });
+        }
+
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
         [HttpDelete("{groupId}/user/{userId}")]
         public async Task<ActionResult<Unit>> DeleteMember(Guid groupId, string userId)
         {
@@ -52,6 +59,13 @@ namespace API.Controllers
         public async Task<ActionResult<GroupDetailsDto>> Get(Guid id)
         {
             return await Mediator.Send(new Get.Query { Id = id });
+        }
+
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
+        [HttpPost("{groupId}/exercise/{exerciseId}")]
+        public async Task<ActionResult<Unit>> AddExercise(Guid groupId, Guid exerciseId)
+        {
+            return await Mediator.Send(new AddExercise.Command { GroupId = groupId, ExerciseId = exerciseId });
         }
     }
 }
