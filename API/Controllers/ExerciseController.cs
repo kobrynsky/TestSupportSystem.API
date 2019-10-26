@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Security;
-using Application.Exercises;
 using Application.Exercises.Dtos;
+using Application.Groups;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Create = Application.Exercises.Create;
+using List = Application.Exercises.List;
 
 
 namespace API.Controllers
@@ -24,6 +27,13 @@ namespace API.Controllers
         public async Task<ActionResult<List<ExerciseDto>>> List()
         {
             return await Mediator.Send(new List.Query());
+        }
+
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
+        [HttpGet("/group/{groupId}")]
+        public async Task<ActionResult<List<ExerciseDto>>> ListByGroup(Guid groupId)
+        {
+            return await Mediator.Send(new ListByGroup.Query { GroupId = groupId });
         }
     }
 }
