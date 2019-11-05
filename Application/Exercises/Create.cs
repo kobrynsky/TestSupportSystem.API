@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 using Application.Courses.Dtos;
 using Application.Errors;
 using Application.Exercises.Dtos;
+using Application.Interfaces;
 using Application.ProgrammingLanguages.Dtos;
 using Domain;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -45,9 +47,13 @@ namespace Application.Exercises
         public class Handler : IRequestHandler<Command>
         {
             private readonly DataContext _context;
-            public Handler(DataContext context)
+            private readonly IUserAccessor _userAccessor;
+            private readonly UserManager<ApplicationUser> _userManager;
+            public Handler(DataContext context, IUserAccessor userAccessor, UserManager<ApplicationUser> userManager)
             {
                 _context = context;
+                _userAccessor = userAccessor;
+                _userManager = userManager;
             }
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
@@ -60,6 +66,14 @@ namespace Application.Exercises
                 if(course == null)
                     throw new RestException(HttpStatusCode.BadRequest, new { Kurs = "Kurs o zadanym Id nie istnieje" });
 
+                var currentUserName = _userAccessor.GetCurrentUsername();
+                if (currentUserName == null)
+                    throw new RestException(HttpStatusCode.Unauthorized, new { Role = "Brak uprawnień" });
+
+                var currentUser = await _userManager.FindByNameAsync(currentUserName);
+                if (currentUser == null)
+                    throw new RestException(HttpStatusCode.Unauthorized, new { Role = "Brak uprawnień" });
+
 
                 var exercise = new Domain.Exercise()
                 {
@@ -68,6 +82,7 @@ namespace Application.Exercises
                     Name = request.Name,
                     ProgrammingLanguage = request.ProgrammingLanguage,
                     Course = course,
+                    AuthorId = currentUser.Id,
                 };
 
                 _context.Exercises.Add(exercise);
