@@ -14,12 +14,14 @@ namespace Persistence
         public DbSet<Group> Groups { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }
         public DbSet<Course> Courses { get; set; }
-        public DbSet<ProgrammingLanguage> ProgrammingLanguages { get; set; }
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<ExerciseGroup> ExerciseGroups { get; set; }
         public DbSet<ExerciseUser> ExerciseUsers { get; set; }
         public DbSet<CourseMainLecturer> CourseMainLecturers { get; set; }
         public DbSet<ExerciseCourse> ExerciseCourses { get; set; }
+        public DbSet<CorrectnessTestInput> CorrectnessTestInputs { get; set; }
+        public DbSet<CorrectnessTestOutput> CorrectnessTestOutputs { get; set; }
+        public DbSet<CorrectnessTest> CorrectnessTests { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

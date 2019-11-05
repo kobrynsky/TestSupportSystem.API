@@ -10,15 +10,12 @@ namespace Domain
         public string Name { get; set; }
         public string Content { get; set; }
         public string InitialCode { get; set; }
+        public string ProgrammingLanguage { get; set; }
+
 
         public Guid CourseId { get; set; }
         [ForeignKey("CourseId")]
         public virtual Course Course { get; set; }
-
-        public Guid ProgrammingLanguageId { get; set; }
-        [ForeignKey("ProgrammingLanguageId")]
-        public virtual ProgrammingLanguage ProgrammingLanguage { get; set; }
-
         public virtual IList<ExerciseGroup> ExerciseGroups { get; set; }
         public virtual IList<ExerciseUser> ExerciseUsers { get; set; }
         public virtual IList<ExerciseCourse> ExerciseCourses { get; set; }

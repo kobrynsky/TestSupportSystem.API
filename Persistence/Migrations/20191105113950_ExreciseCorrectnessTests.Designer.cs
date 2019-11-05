@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20191105113950_ExreciseCorrectnessTests")]
+    partial class ExreciseCorrectnessTests
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,60 +95,6 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Domain.CorrectnessTest", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ExerciseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ExerciseId");
-
-                    b.ToTable("CorrectnessTests");
-                });
-
-            modelBuilder.Entity("Domain.CorrectnessTestInput", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("CorrectnessTestId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CorrectnessTestId");
-
-                    b.ToTable("CorrectnessTestInputs");
-                });
-
-            modelBuilder.Entity("Domain.CorrectnessTestOutput", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("CorrectnessTestId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CorrectnessTestId");
-
-                    b.ToTable("CorrectnessTestOutputs");
-                });
-
             modelBuilder.Entity("Domain.Course", b =>
                 {
                     b.Property<Guid>("Id")
@@ -199,6 +147,9 @@ namespace Persistence.Migrations
 
                     b.Property<string>("ProgrammingLanguage")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProgrammingLanguageId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -293,6 +244,60 @@ namespace Persistence.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("Domain.TestInput", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TestInputs");
+                });
+
+            modelBuilder.Entity("Domain.TestInputOutput", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ExerciseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("InputId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OutputId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExerciseId");
+
+                    b.HasIndex("InputId");
+
+                    b.HasIndex("OutputId");
+
+                    b.ToTable("TestInputOutputs");
+                });
+
+            modelBuilder.Entity("Domain.TestOutput", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TestOutputs");
                 });
 
             modelBuilder.Entity("Domain.UserGroup", b =>
@@ -441,33 +446,6 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Domain.CorrectnessTest", b =>
-                {
-                    b.HasOne("Domain.Exercise", "Exercise")
-                        .WithMany()
-                        .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.CorrectnessTestInput", b =>
-                {
-                    b.HasOne("Domain.CorrectnessTest", "CorrectnessTest")
-                        .WithMany("Inputs")
-                        .HasForeignKey("CorrectnessTestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.CorrectnessTestOutput", b =>
-                {
-                    b.HasOne("Domain.CorrectnessTest", "CorrectnessTest")
-                        .WithMany("Outputs")
-                        .HasForeignKey("CorrectnessTestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Domain.CourseMainLecturer", b =>
                 {
                     b.HasOne("Domain.Course", "Course")
@@ -556,6 +534,27 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Course", "Course")
                         .WithMany("Groups")
                         .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.TestInputOutput", b =>
+                {
+                    b.HasOne("Domain.Exercise", "Exercise")
+                        .WithMany()
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.TestInput", "Input")
+                        .WithMany()
+                        .HasForeignKey("InputId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.TestOutput", "Output")
+                        .WithMany()
+                        .HasForeignKey("OutputId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
