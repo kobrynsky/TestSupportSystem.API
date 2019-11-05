@@ -21,7 +21,7 @@ namespace Application.Groups
         {
         }
 
-        public class Handler : IRequestHandler<List.Query, List<GroupDto>>
+        public class Handler : IRequestHandler<Query, List<GroupDto>>
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
@@ -42,9 +42,12 @@ namespace Application.Groups
                 if (currentUserName == null)
                     throw new RestException(HttpStatusCode.Unauthorized, new { Role = "Brak uprawnień" });
 
-                var currentUser = await _userManager.FindByNameAsync(_userAccessor.GetCurrentUsername());
+                var currentUser = await _userManager.FindByNameAsync(currentUserName);
                 if (currentUser == null)
                     throw new RestException(HttpStatusCode.Unauthorized, new { Role = "Brak uprawnień" });
+
+                var userGroups = await _context.UserGroups.Where(x => x.UserId == currentUser.Id).ToListAsync();
+                currentUser.UserGroups = userGroups;
 
                 var groups = new System.Collections.Generic.List<Group>();
 
@@ -72,13 +75,20 @@ namespace Application.Groups
                         break;
 
                     case Role.Lecturer:
-                        groups = await _context.Groups
-                            .Where(x => currentUser.UserGroups
-                                .Any(y => y.GroupId == x.Id))
-                            .Include(x => x.Course)
-                            .Include(x => x.UserGroups)
-                            .ThenInclude(y => y.User)
-                            .ToListAsync();
+                        if(currentUser.UserGroups == null || currentUser.UserGroups.Count == 0)
+                            groups = new List<Group>();
+                        else
+                        {
+                            groups = await _context.Groups
+                                .Include(x => x.Course)
+                                .Include(x => x.UserGroups)
+                                .ThenInclude(y => y.User)
+                                .ToListAsync();
+
+                            groups = groups.Where(x => currentUser.UserGroups
+                                .Any(y => y.GroupId == x.Id)).ToList();
+                        }
+
                         break;
 
                     case Role.Student:

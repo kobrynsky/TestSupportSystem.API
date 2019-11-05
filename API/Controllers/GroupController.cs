@@ -34,7 +34,7 @@ namespace API.Controllers
         }
 
         [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
-        [HttpPost("{groupId}/userEmail/{userEmail}")]
+        [HttpPost("{groupId}/userEmail/{email}")]
         public async Task<ActionResult<Unit>> AddMemberByEmail(Guid groupId, string email)
         {
             return await Mediator.Send(new AddMemberByEmail.Command { GroupId = groupId, Email = email });

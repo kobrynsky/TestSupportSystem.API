@@ -5,9 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Courses.Dtos;
 using Application.Errors;
+using Application.Interfaces;
 using Domain;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -34,9 +36,13 @@ namespace Application.Groups
         public class Handler : IRequestHandler<Command>
         {
             private readonly DataContext _context;
-            public Handler(DataContext context)
+            private readonly IUserAccessor _userAccessor;
+            private readonly UserManager<ApplicationUser> _userManager;
+            public Handler(DataContext context, IUserAccessor userAccessor, UserManager<ApplicationUser> userManager)
             {
                 _context = context;
+                _userAccessor = userAccessor;
+                _userManager = userManager;
             }
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
@@ -49,6 +55,14 @@ namespace Application.Groups
                 if(course == null)
                     throw new RestException(HttpStatusCode.BadRequest, new { Kurs = "Nie znaleziono kursu"});
 
+                var currentUserName = _userAccessor.GetCurrentUsername();
+                if (currentUserName == null)
+                    throw new RestException(HttpStatusCode.Unauthorized, new { Role = "Brak uprawnień" });
+
+                var currentUser = await _userManager.FindByNameAsync(_userAccessor.GetCurrentUsername());
+                if (currentUser == null)
+                    throw new RestException(HttpStatusCode.Unauthorized, new { Role = "Brak uprawnień" });
+
                 var group = new Group
                 {
                     Id = request.Id,
@@ -56,8 +70,18 @@ namespace Application.Groups
                     Course = course
                 };
 
-                _context.Groups.Add(group);
+                await _context.Groups.AddAsync(group);
 
+                if (currentUser.Role == Role.MainLecturer || currentUser.Role == Role.Lecturer)
+                {
+                    var userGroup = new UserGroup()
+                    {
+                        GroupId = group.Id,
+                        UserId = currentUser.Id,
+                    };
+
+                    await _context.UserGroups.AddAsync(userGroup);
+                }
 
                 var success = await _context.SaveChangesAsync() > 0;
 
