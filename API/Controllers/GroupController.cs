@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using API.Security;
+﻿using API.Security;
 using Application.Groups;
 using Application.Groups.Dtos;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
-    public class GroupController: BaseController
+    public class GroupController : BaseController
     {
         [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
         [HttpPost]
@@ -19,7 +19,7 @@ namespace API.Controllers
             return await Mediator.Send(command);
         }
 
-        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator, Role.Student)]
         [HttpGet]
         public async Task<ActionResult<List<GroupDto>>> List()
         {
@@ -51,10 +51,10 @@ namespace API.Controllers
         [HttpGet("getByName/{name}")]
         public async Task<ActionResult<GroupDto>> GetByName(string name)
         {
-            return await Mediator.Send(new GetByName.Query{Name = name});
+            return await Mediator.Send(new GetByName.Query { Name = name });
         }
 
-        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator, Role.Student)]
         [HttpGet("{id}")]
         public async Task<ActionResult<GroupDetailsDto>> Get(Guid id)
         {

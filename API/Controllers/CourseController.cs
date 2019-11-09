@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using API.Security;
+﻿using API.Security;
 using Application.Courses;
 using Application.Courses.Dtos;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Create = Application.Courses.Create;
 using List = Application.Courses.List;
 
 namespace API.Controllers
 {
-    public class CourseController: BaseController
+    public class CourseController : BaseController
     {
         [AuthorizeRoles(Role.Administrator)]
         [HttpPost]
@@ -21,7 +21,7 @@ namespace API.Controllers
             return await Mediator.Send(command);
         }
 
-        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator, Role.Student)]
         [HttpGet]
         public async Task<ActionResult<List<CourseDto>>> List()
         {

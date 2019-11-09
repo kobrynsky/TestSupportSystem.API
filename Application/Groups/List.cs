@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using Application.Errors;
+﻿using Application.Errors;
 using Application.Groups.Dtos;
 using Application.Interfaces;
 using AutoMapper;
@@ -12,6 +7,11 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Application.Groups
 {
@@ -75,7 +75,7 @@ namespace Application.Groups
                         break;
 
                     case Role.Lecturer:
-                        if(currentUser.UserGroups == null || currentUser.UserGroups.Count == 0)
+                        if (currentUser.UserGroups == null || currentUser.UserGroups.Count == 0)
                             groups = new List<Group>();
                         else
                         {
@@ -93,10 +93,13 @@ namespace Application.Groups
 
                     case Role.Student:
                         groups = await _context.Groups
-                            .Where(x => currentUser.UserGroups
-                                .Any(y => y.GroupId == x.Id))
                             .Include(x => x.Course)
                             .ToListAsync();
+
+                        groups = groups
+                            .Where(x => currentUser.UserGroups
+                                .Any(y => y.GroupId == x.Id))
+                            .ToList();
                         break;
                 }
                 return _mapper.Map<List<GroupDto>>(groups);
