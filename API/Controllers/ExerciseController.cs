@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using API.Security;
+﻿using API.Security;
 using Application.Exercises;
 using Application.Exercises.Dtos;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Create = Application.Exercises.Create;
 using List = Application.Exercises.List;
 
 
 namespace API.Controllers
 {
-    public class ExerciseController: BaseController
+    public class ExerciseController : BaseController
     {
         [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
         [HttpPost]
@@ -22,7 +22,7 @@ namespace API.Controllers
             return await Mediator.Send(command);
         }
 
-        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator, Role.Student)]
         [HttpGet]
         public async Task<ActionResult<List<ExerciseDto>>> List()
         {
@@ -34,6 +34,13 @@ namespace API.Controllers
         public async Task<ActionResult<List<ExerciseDto>>> ListByGroup(Guid groupId)
         {
             return await Mediator.Send(new ListByGroup.Query { GroupId = groupId });
+        }
+
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ExerciseDetailsDto>> Get(Guid id)
+        {
+            return await Mediator.Send(new Get.Query { Id = id });
         }
     }
 }
