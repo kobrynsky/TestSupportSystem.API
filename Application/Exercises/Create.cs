@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using Application.Courses.Dtos;
+﻿using Application.Courses.Dtos;
 using Application.Errors;
 using Application.Exercises.Dtos;
 using Application.Interfaces;
-using Application.ProgrammingLanguages.Dtos;
 using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Application.Exercises
 {
@@ -29,7 +28,7 @@ namespace Application.Exercises
             public string InitialCode { get; set; }
             public CourseDto Course { get; set; }
             public string ProgrammingLanguage { get; set; }
-            public List<CorrectnessTestsDto> CorrectnessTests { get; set; }
+            public List<CorrectnessTestDto> CorrectnessTests { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -63,7 +62,7 @@ namespace Application.Exercises
 
                 var course = await _context.Courses.Where(x => x.Id == request.Course.Id).FirstOrDefaultAsync();
 
-                if(course == null)
+                if (course == null)
                     throw new RestException(HttpStatusCode.BadRequest, new { Kurs = "Kurs o zadanym Id nie istnieje" });
 
                 var currentUserName = _userAccessor.GetCurrentUsername();
