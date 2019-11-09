@@ -1,5 +1,6 @@
-﻿using System;
-using Application.Courses.Dtos;
+﻿using Application.Courses.Dtos;
+using Application.User.Dtos;
+using System;
 
 namespace Application.Exercises.Dtos
 {
@@ -10,5 +11,6 @@ namespace Application.Exercises.Dtos
         public string Content { get; set; }
         public string InitialCode { get; set; }
         public CourseDto Course { get; set; }
+        public UserDto Author { get; set; }
     }
 }

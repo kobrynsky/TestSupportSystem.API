@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using Application.Errors;
+﻿using Application.Errors;
 using Application.Exercises.Dtos;
 using Application.Interfaces;
 using AutoMapper;
@@ -12,6 +7,11 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Application.Exercises
 {
@@ -51,7 +51,10 @@ namespace Application.Exercises
                 switch (currentUser.Role)
                 {
                     case Role.Administrator:
-                        exercises = await _context.Exercises.ToListAsync();
+                        exercises = await _context.Exercises
+                            .Include(x => x.Course)
+                            .Include(x => x.Author)
+                            .ToListAsync();
                         break;
 
                     case Role.MainLecturer:
@@ -59,20 +62,36 @@ namespace Application.Exercises
                             throw new RestException(HttpStatusCode.BadRequest, new { Kursy = "Główny prowadzący nie jest przypisany do żadnego kursu" });
 
                         var courseMainLecturers = _context.CourseMainLecturers.Where(x => x.MainLecturerId == currentUser.Id);
-                        exercises = await _context.Exercises.Where(x => courseMainLecturers.Any(y => y.CourseId == x.CourseId)).ToListAsync();
+                        exercises = await _context.Exercises
+                            .Where(x => courseMainLecturers
+                                .Any(y => y.CourseId == x.CourseId))
+                            .Include(x => x.Course)
+                            .Include(x => x.Author)
+                            .ToListAsync();
                         break;
 
                     case Role.Lecturer:
-                        exercises = await _context.Exercises.Where(x => x.AuthorId == currentUser.Id).ToListAsync();
+                        exercises = await _context.Exercises
+                            .Where(x => x.AuthorId == currentUser.Id)
+                            .Include(x => x.Course)
+                            .Include(x => x.Author)
+                            .ToListAsync();
                         break;
 
                     case Role.Student:
                         var exerciseUsers = _context.ExerciseUsers.Where(x => x.StudentId == currentUser.Id);
-                        exercises = await _context.Exercises.Where(x => exerciseUsers.Any(y => y.ExerciseId == x.Id)).ToListAsync();
+                        exercises = await _context.Exercises
+                            .Where(x => exerciseUsers
+                                .Any(y => y.ExerciseId == x.Id))
+                            .Include(x => x.Course)
+                            .Include(x => x.Author)
+                            .ToListAsync();
                         break;
                 }
 
-                return _mapper.Map<List<ExerciseDto>>(exercises);
+                var dtos = _mapper.Map<List<ExerciseDto>>(exercises);
+
+                return dtos;
             }
         }
     }
