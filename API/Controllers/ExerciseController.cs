@@ -42,5 +42,12 @@ namespace API.Controllers
         {
             return await Mediator.Send(new Get.Query { Id = id });
         }
+
+        [AuthorizeRoles(Role.Student)]
+        [HttpPost("solve")]
+        public async Task<ActionResult<Unit>> Solve(Solve.Command command)
+        {
+            return await Mediator.Send(command);
+        }
     }
 }
