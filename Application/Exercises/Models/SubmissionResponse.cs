@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Compiler.Models
+﻿namespace Application.Exercises.Models
 {
     public class SubmissionResponse
     {
@@ -18,4 +18,12 @@
         public string description { get; set; }
     }
 
+    public static class StatusDescription
+    {
+        public const string Accepted = "Accepted";
+        public const string WrongAnswer = "Wrong Answer";
+        public const string TimeLimitExceeded = "Time Limit Exceeded";
+        public const string CompilationError = "Compilation Error";
+        public const string InternalError = "Internal Error";
+    }
 }
