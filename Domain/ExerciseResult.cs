@@ -7,9 +7,9 @@ namespace Domain
     {
         public Guid Id { get; set; }
 
-        public Guid ExerciseId { get; set; }
-        [ForeignKey("ExerciseId")]
-        public virtual Exercise Exercise { get; set; }
+        public Guid CorrectnessTestId { get; set; }
+        [ForeignKey("CorrectnessTestId")]
+        public virtual CorrectnessTest CorrectnessTest { get; set; }
 
         public string StudentId { get; set; }
         [ForeignKey("StudentId")]
