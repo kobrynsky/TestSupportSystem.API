@@ -16,5 +16,6 @@ namespace Application.Exercises.Dtos
         public CourseDto Course { get; set; }
         public List<GroupDto> Groups { get; set; }
         public UserDto Author { get; set; }
+        public bool Solved { get; set; }
     }
 }

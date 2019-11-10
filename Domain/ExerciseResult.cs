@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain
@@ -7,20 +8,12 @@ namespace Domain
     {
         public Guid Id { get; set; }
 
-        public Guid CorrectnessTestId { get; set; }
-        [ForeignKey("CorrectnessTestId")]
-        public virtual CorrectnessTest CorrectnessTest { get; set; }
-
         public string StudentId { get; set; }
         [ForeignKey("StudentId")]
         public virtual ApplicationUser Student { get; set; }
-
         public string Code { get; set; }
-        public string Time { get; set; }
-        public int Memory { get; set; }
-        public string CompileOutput { get; set; }
-        public string Message { get; set; }
-        public string Error { get; set; }
-        public string Status { get; set; }
+
+        public virtual IList<CorrectnessTestResult> CorrectnessTestResults { get; set; }
+
     }
 }
