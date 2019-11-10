@@ -1,12 +1,14 @@
-﻿using System;
-using System.Text;
+﻿using API.Middleware;
+using Application.Exercises;
 using Application.Interfaces;
 using Application.User;
-using API.Middleware;
-using Application.Courses;
+using AutoMapper;
 using Domain;
+using FluentValidation.AspNetCore;
+using Infrastructure.Compiler;
 using Infrastructure.Security;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -16,9 +18,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Persistence;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using AutoMapper;
-using FluentValidation.AspNetCore;
+using System;
+using System.Net.Http;
+using System.Text;
+using Create = Application.Courses.Create;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace API
@@ -67,15 +70,23 @@ namespace API
             identityBuilder.AddEntityFrameworkStores<DataContext>();
             identityBuilder.AddSignInManager<SignInManager<ApplicationUser>>();
 
-            services.AddMediatR(typeof(Login.Handler).Assembly);
+            var apiCompilerUri = new Uri("http://192.168.99.100:3000/");
+            var httpClient = new HttpClient()
+            {
+                BaseAddress = apiCompilerUri,
+            };
+
+            services.AddSingleton<HttpClient>(httpClient);
+
+            services.AddScoped<IUserAccessor, UserAccessor>();
+            services.AddScoped<IJwtGenerator, JwtGenerator>();
+            services.AddScoped<IApiCompiler, ApiCompiler>();
+            services.AddMediatR(typeof(Solve.Handler).Assembly);
             services.AddAutoMapper(typeof(Login.Handler));
             services.AddMvc()
                 .AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssemblyContaining<Create>())
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddMvc(option => option.EnableEndpointRouting = false);
-            services.AddScoped<IUserAccessor, UserAccessor>();
-            services.AddScoped<IJwtGenerator, JwtGenerator>();   
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
