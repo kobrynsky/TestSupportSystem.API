@@ -15,6 +15,7 @@ namespace Domain
         [ForeignKey("StudentId")]
         public virtual ApplicationUser Student { get; set; }
 
+        public string Code { get; set; }
         public string Time { get; set; }
         public int Memory { get; set; }
         public string CompileOutput { get; set; }
