@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -70,6 +71,8 @@ namespace Application.Exercises
                 if (exercise == null)
                     throw new RestException(HttpStatusCode.Unauthorized, new { Exercise = "Nie znaleziono zadania" });
 
+                var correctnessTestsResults = new List<CorrectnessTestResult>();
+
                 foreach (var test in tests)
                 {
                     var submission = ConvertToSubmission(request.Code,
@@ -78,16 +81,28 @@ namespace Application.Exercises
                         test.Outputs.Select(x => x.Content).ToArray());
 
                     var response = await _apiCompiler.SendSubmission(submission);
-                    //                    if (response.status.description != StatusDescription.Accepted)
+
+                    var result = new CorrectnessTestResult()
+                    {
+                        CorrectnessTestId = test.Id,
+                        Memory = response.memory,
+                        CompileOutput = response.compile_output,
+                        Error = response.stderr,
+                        Message = response.message,
+                        Status = response.status.description,
+                        Time = response.time,
+                    };
+                    correctnessTestsResults.Add(result);
                 }
 
+                var exerciseResult = new ExerciseResult()
+                {
+                    Code = request.Code,
+                    StudentId = currentUser.Id,
+                    CorrectnessTestResults = correctnessTestsResults,
+                };
 
-                //sprawdz czy sie kompiluje
-                //sprawdz czy przechodzi testy
-
-                //zapisz wynik
-
-
+                await _context.ExerciseResults.AddAsync(exerciseResult);
 
                 var success = await _context.SaveChangesAsync() > 0;
 
