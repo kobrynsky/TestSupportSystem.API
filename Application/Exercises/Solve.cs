@@ -85,12 +85,12 @@ namespace Application.Exercises
                     var result = new CorrectnessTestResult()
                     {
                         CorrectnessTestId = test.Id,
-                        Memory = response.memory,
+                        Memory = response.memory ?? 0,
                         CompileOutput = response.compile_output,
                         Error = response.stderr,
                         Message = response.message,
                         Status = response.status.description,
-                        Time = response.time,
+                        Time = response.time ?? "0",
                     };
                     correctnessTestsResults.Add(result);
                 }
