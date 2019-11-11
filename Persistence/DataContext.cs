@@ -23,6 +23,7 @@ namespace Persistence
         public DbSet<CorrectnessTestOutput> CorrectnessTestOutputs { get; set; }
         public DbSet<CorrectnessTest> CorrectnessTests { get; set; }
         public DbSet<ExerciseResult> ExerciseResults { get; set; }
+        public DbSet<CorrectnessTestResult> CorrectnessTestResults { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
