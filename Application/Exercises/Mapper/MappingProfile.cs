@@ -14,6 +14,7 @@ namespace Application.Exercises.Mapper
             CreateMap<CorrectnessTest, CorrectnessTestDto>()
                 .ForMember(dest => dest.Inputs, opt => opt.MapFrom(src => src.Inputs.Select(x => x.Content)))
                 .ForMember(dest => dest.Outputs, opt => opt.MapFrom(src => src.Outputs.Select(x => x.Content)));
+            CreateMap<CorrectnessTestResult, CorrectnessTestResultDto>();
         }
     }
 }

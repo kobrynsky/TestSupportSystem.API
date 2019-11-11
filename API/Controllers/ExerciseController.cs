@@ -49,5 +49,12 @@ namespace API.Controllers
         {
             return await Mediator.Send(command);
         }
+
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator, Role.Student)]
+        [HttpGet("getSolved/{id}")]
+        public async Task<ActionResult<SolvedExerciseDetailsDto>> GetSolved(Guid id)
+        {
+            return await Mediator.Send(new GetSolved.Query { Id = id });
+        }
     }
 }
