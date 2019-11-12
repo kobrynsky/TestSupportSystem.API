@@ -36,7 +36,7 @@ namespace API.Controllers
             return await Mediator.Send(new ListByGroup.Query { GroupId = groupId });
         }
 
-        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator, Role.Student)]
         [HttpGet("{id}")]
         public async Task<ActionResult<ExerciseDetailsDto>> Get(Guid id)
         {
@@ -51,10 +51,10 @@ namespace API.Controllers
         }
 
         [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator, Role.Student)]
-        [HttpGet("getSolved/{id}")]
-        public async Task<ActionResult<SolvedExerciseDetailsDto>> GetSolved(Guid id)
+        [HttpGet("getSolved/{id}/group/{groupId}")]
+        public async Task<ActionResult<SolvedExerciseDetailsDto>> GetSolved(Guid id, Guid groupId)
         {
-            return await Mediator.Send(new GetSolved.Query { Id = id });
+            return await Mediator.Send(new GetSolved.Query { Id = id, GroupId = groupId });
         }
     }
 }

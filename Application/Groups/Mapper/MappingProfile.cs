@@ -1,11 +1,11 @@
-﻿using System.Linq;
-using Application.Groups.Dtos;
+﻿using Application.Groups.Dtos;
 using AutoMapper;
 using Domain;
+using System.Linq;
 
 namespace Application.Groups.Mapper
 {
-    public class MappingProfile: Profile
+    public class MappingProfile : Profile
     {
         public MappingProfile()
         {
@@ -13,7 +13,9 @@ namespace Application.Groups.Mapper
             CreateMap<Group, GroupDto>()
                 .ForMember(d => d.Members, o => o.MapFrom(s => s.UserGroups.Select(x => x.User)));
             CreateMap<Group, GroupDetailsDto>()
-                .ForMember(d => d.Members, o => o.MapFrom(s => s.UserGroups.Select(x => x.User)));
+                .ForMember(d => d.Members, o => o.MapFrom(s => s.UserGroups.Select(x => x.User)))
+                .ForMember(d => d.Exercises, o => o.MapFrom(s => s.ExerciseGroups.Select(x => x.Exercise)));
         }
     }
 }
+

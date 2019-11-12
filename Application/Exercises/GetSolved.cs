@@ -22,6 +22,7 @@ namespace Application.Exercises
         public class Query : IRequest<SolvedExerciseDetailsDto>
         {
             public Guid Id { get; set; }
+            public Guid GroupId { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, SolvedExerciseDetailsDto>
@@ -52,7 +53,9 @@ namespace Application.Exercises
                 var exercise = await _context.Exercises.Include(x => x.Course).Where(x => x.Id == request.Id).FirstAsync();
 
                 var exerciseResult = await _context.ExerciseResults
-                    .Where(x => x.StudentId == currentUser.Id && x.CorrectnessTestResults
+                    .Where(x => x.StudentId == currentUser.Id &&
+                                x.GroupId == request.GroupId &&
+                                x.CorrectnessTestResults
                                     .All(y => y.CorrectnessTest.ExerciseId == exercise.Id))
                     .Include(x => x.CorrectnessTestResults)
                     .FirstAsync();

@@ -52,9 +52,9 @@ namespace Application.Exercises
                 {
                     case Role.Administrator:
                         exercises = await _context.Exercises
-                            .Include(x => x.Course)
-                            .Include(x => x.Author)
-                            .ToListAsync();
+                        .Include(x => x.Course)
+                        .Include(x => x.Author)
+                        .ToListAsync();
                         break;
 
                     case Role.MainLecturer:
@@ -79,14 +79,56 @@ namespace Application.Exercises
                         break;
 
                     case Role.Student:
-                        var exerciseUsers = _context.ExerciseUsers.Where(x => x.StudentId == currentUser.Id);
+                        //                        var userGroups = _context.UserGroups
+                        //                            .Where(x => x.UserId == currentUser.Id);
+                        //
+                        //                        var courses = userGroups
+                        //                            .Select(x => x.Group.Course)
+                        //                            .Distinct();
+                        //
+                        //                        var courseExercises = await _context.Exercises
+                        //                            .Where(x => courses
+                        //                                .Any(y => y.Id == x.Id))
+                        //                            .ToListAsync();
+                        //
+                        //                        var groupsExercises = await _context.ExerciseGroups
+                        //                            .Where(x => userGroups
+                        //                                .Any(y => y.GroupId == x.GroupId))
+                        //                            .Select(x => x.Exercise)
+                        //                            .ToListAsync();
+                        //
+                        //                        var userExercises = await _context.ExerciseUsers
+                        //                            .Where(x => x.StudentId == currentUser.Id)
+                        //                            .Select(x => x.Exercise)
+                        //                            .ToListAsync();
+                        //
+                        //                        exercises.AddRange(courseExercises);
+                        //                        exercises.AddRange(groupsExercises);
+                        //                        exercises.AddRange(userExercises);
+                        //                        exercises = exercises.Distinct().ToList();
+
                         exercises = await _context.Exercises
-                            .Where(x => exerciseUsers
-                                .Any(y => y.ExerciseId == x.Id))
                             .Include(x => x.Course)
                             .Include(x => x.Author)
                             .ToListAsync();
-                        break;
+
+                        var exercisesResults = await _context.ExerciseResults
+                            .Where(x => x.StudentId == currentUser.Id)
+                            .Include(x => x.CorrectnessTestResults)
+                            .ThenInclude(x => x.CorrectnessTest)
+                            .ToListAsync();
+
+                        var studentExercisesDtos = _mapper.Map<List<ExerciseDto>>(exercises);
+
+                        foreach (var exercise in studentExercisesDtos)
+                        {
+                            var solved = exercisesResults
+                                .Any(x => x.CorrectnessTestResults
+                                              .First().CorrectnessTest.ExerciseId == exercise.Id);
+                            exercise.Solved = solved;
+                        }
+
+                        return studentExercisesDtos;
                 }
 
                 var dtos = _mapper.Map<List<ExerciseDto>>(exercises);

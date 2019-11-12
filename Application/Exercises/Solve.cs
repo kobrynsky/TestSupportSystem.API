@@ -21,6 +21,7 @@ namespace Application.Exercises
         public class Command : IRequest
         {
             public Guid Id { get; set; }
+            public Guid GroupId { get; set; }
             public string Code { get; set; }
         }
 
@@ -29,6 +30,7 @@ namespace Application.Exercises
             public CommandValidator()
             {
                 RuleFor(x => x.Id).NotEmpty();
+                RuleFor(x => x.GroupId).NotEmpty();
                 RuleFor(x => x.Code).NotEmpty();
             }
         }
@@ -90,7 +92,7 @@ namespace Application.Exercises
                         Error = response.stderr,
                         Message = response.message,
                         Status = response.status.description,
-                        Time = response.time ?? "0",
+                        Time = response.time ?? "0  ",
                     };
                     correctnessTestsResults.Add(result);
                 }
@@ -99,6 +101,7 @@ namespace Application.Exercises
                 {
                     Code = request.Code,
                     StudentId = currentUser.Id,
+                    GroupId = request.GroupId,
                     CorrectnessTestResults = correctnessTestsResults,
                 };
 
