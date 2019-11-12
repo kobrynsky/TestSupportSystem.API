@@ -67,5 +67,12 @@ namespace API.Controllers
         {
             return await Mediator.Send(new AddExercise.Command { GroupId = groupId, ExerciseId = exerciseId });
         }
+
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
+        [HttpPost("{groupId}/exerciseName/{exerciseName}")]
+        public async Task<ActionResult<Unit>> AddExerciseByName(Guid groupId, string exerciseName)
+        {
+            return await Mediator.Send(new AddExerciseByName.Command { GroupId = groupId, ExerciseName = exerciseName });
+        }
     }
 }
