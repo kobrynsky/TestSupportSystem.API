@@ -48,8 +48,11 @@ namespace Application.Groups
                     throw new RestException(HttpStatusCode.Unauthorized, new { Role = "Brak uprawnień" });
 
                 var group = await _context.Groups.Where(x => x.Id == request.Id)
-                    .Include(x => x.UserGroups).ThenInclude(x => x.User)
+                    .Include(x => x.UserGroups)
+                    .ThenInclude(x => x.User)
                     .Include(x => x.Course)
+                    .Include(x => x.ExerciseGroups)
+                    .ThenInclude(x => x.Exercise)
                     .FirstOrDefaultAsync();
 
                 if (currentUser.Role == Role.Student)
@@ -57,6 +60,30 @@ namespace Application.Groups
                     var userGroups = await _context.UserGroups.Where(x => x.UserId == currentUser.Id).ToListAsync();
                     if (userGroups.All(x => x.GroupId != @group.Id))
                         throw new RestException(HttpStatusCode.Unauthorized, new { Role = "Brak uprawnień" });
+
+                    var exercises = await _context.Exercises
+                        .Include(x => x.Course)
+                        .Include(x => x.Author)
+                        .ToListAsync();
+
+                    var exercisesResults = await _context.ExerciseResults
+                        .Where(x => x.StudentId == currentUser.Id && x.GroupId == request.Id)
+                        .Include(x => x.CorrectnessTestResults)
+                        .ThenInclude(x => x.CorrectnessTest)
+                        .ToListAsync();
+
+                    var studentGroupDto = _mapper.Map<GroupDetailsDto>(group);
+
+
+                    foreach (var exercise in studentGroupDto.Exercises)
+                    {
+                        var solved = exercisesResults
+                            .Any(x => x.CorrectnessTestResults
+                                          .First().CorrectnessTest.ExerciseId == exercise.Id);
+                        exercise.Solved = solved;
+                    }
+
+                    return studentGroupDto;
                 }
 
                 var dto = _mapper.Map<GroupDetailsDto>(group);
