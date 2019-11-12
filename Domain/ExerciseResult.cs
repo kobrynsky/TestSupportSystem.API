@@ -11,6 +11,10 @@ namespace Domain
         public string StudentId { get; set; }
         [ForeignKey("StudentId")]
         public virtual ApplicationUser Student { get; set; }
+
+        public Guid GroupId { get; set; }
+        [ForeignKey("GroupId")]
+        public virtual Group Group { get; set; }
         public string Code { get; set; }
 
         public virtual IList<CorrectnessTestResult> CorrectnessTestResults { get; set; }
