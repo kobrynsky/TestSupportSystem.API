@@ -51,10 +51,10 @@ namespace API.Controllers
         }
 
         [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator, Role.Student)]
-        [HttpGet("getSolved/{id}/group/{groupId}")]
-        public async Task<ActionResult<SolvedExerciseDetailsDto>> GetSolved(Guid id, Guid groupId)
+        [HttpGet("getSolved/{exerciseId}/group/{groupId}/user/{studentId}")]
+        public async Task<ActionResult<SolvedExerciseDetailsDto>> GetSolved(Guid exerciseId, Guid groupId, string studentId)
         {
-            return await Mediator.Send(new GetSolved.Query { Id = id, GroupId = groupId });
+            return await Mediator.Send(new GetSolved.Query { ExerciseId = exerciseId, GroupId = groupId, StudentId = studentId });
         }
     }
 }

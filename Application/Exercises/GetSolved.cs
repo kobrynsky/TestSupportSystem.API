@@ -21,8 +21,9 @@ namespace Application.Exercises
     {
         public class Query : IRequest<SolvedExerciseDetailsDto>
         {
-            public Guid Id { get; set; }
+            public Guid ExerciseId { get; set; }
             public Guid GroupId { get; set; }
+            public string StudentId { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, SolvedExerciseDetailsDto>
@@ -50,10 +51,10 @@ namespace Application.Exercises
                 if (currentUser == null)
                     throw new RestException(HttpStatusCode.Unauthorized, new { Role = "Brak uprawnień" });
 
-                var exercise = await _context.Exercises.Include(x => x.Course).Where(x => x.Id == request.Id).FirstAsync();
+                var exercise = await _context.Exercises.Include(x => x.Course).Where(x => x.Id == request.ExerciseId).FirstAsync();
 
                 var exerciseResult = await _context.ExerciseResults
-                    .Where(x => x.StudentId == currentUser.Id &&
+                    .Where(x => x.StudentId == request.StudentId &&
                                 x.GroupId == request.GroupId &&
                                 x.CorrectnessTestResults
                                     .All(y => y.CorrectnessTest.ExerciseId == exercise.Id))
