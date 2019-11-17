@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using API.Security;
-using Application.Groups;
-using Application.Groups.Dtos;
+﻿using API.Security;
 using Application.User;
 using Application.User.Dtos;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using List = Application.User.List;
 
 namespace API.Controllers
@@ -47,6 +45,13 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> GetByEmail(string email)
         {
             return await Mediator.Send(new GetByEmail.Query { Email = email });
+        }
+
+        [AuthorizeRoles(Role.Lecturer, Role.MainLecturer, Role.Administrator)]
+        [HttpGet("getDetailsByEmail/{email}")]
+        public async Task<ActionResult<UserDetailsDto>> GetDetailsByEmail(string email)
+        {
+            return await Mediator.Send(new GetDetailsByEmail.Query { Email = email });
         }
 
 
