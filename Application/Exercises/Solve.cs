@@ -127,19 +127,14 @@ namespace Application.Exercises
 
             private int GetProgrammingLanguageId(string programmingLanguage)
             {
-                switch (programmingLanguage)
+                return programmingLanguage switch
                 {
-                    case "C++":
-                        return 11;
-                    case "C#":
-                        return 16;
-                    case "Java":
-                        return 26;
-                    case "Python":
-                        return 34;
-                    default:
-                        return 0;
-                }
+                    "C++" => 11,
+                    "C#" => 16,
+                    "Java" => 26,
+                    "Python" => 34,
+                    _ => 0
+                };
             }
         }
     }

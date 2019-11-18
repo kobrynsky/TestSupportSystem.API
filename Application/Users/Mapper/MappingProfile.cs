@@ -1,8 +1,8 @@
-﻿using Application.User.Dtos;
+﻿using Application.Users.Dtos;
 using AutoMapper;
 using Domain;
 
-namespace Application.User.Mapper
+namespace Application.Users.Mapper
 {
     class MappingProfile : Profile
     {

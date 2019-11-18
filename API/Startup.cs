@@ -1,7 +1,7 @@
 ﻿using API.Middleware;
 using Application.Exercises;
 using Application.Interfaces;
-using Application.User;
+using Application.Users;
 using AutoMapper;
 using Domain;
 using FluentValidation.AspNetCore;

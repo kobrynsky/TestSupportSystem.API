@@ -1,14 +1,14 @@
-﻿using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using Application.Errors;
+﻿using Application.Errors;
 using Application.Interfaces;
 using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Application.User
+namespace Application.Users
 {
     public class Login
     {

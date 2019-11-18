@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using Application.Errors;
+﻿using Application.Errors;
 using Application.Interfaces;
 using Application.Validators;
 using Domain;
@@ -12,8 +7,13 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using System;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Application.User
+namespace Application.Users
 {
     public class Register
     {

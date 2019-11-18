@@ -1,4 +1,4 @@
-﻿using Application.User.Dtos;
+﻿using Application.Users.Dtos;
 using System;
 
 namespace Application.Exercises.Dtos

@@ -1,14 +1,13 @@
-﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Application.Groups.Dtos;
-using Application.User.Dtos;
+﻿using Application.Users.Dtos;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Application.User
+namespace Application.Users
 {
     public class GetByEmail
     {

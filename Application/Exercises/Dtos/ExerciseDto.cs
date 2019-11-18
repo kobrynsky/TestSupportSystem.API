@@ -1,6 +1,6 @@
 ﻿using Application.Courses.Dtos;
 using Application.Groups.Dtos;
-using Application.User.Dtos;
+using Application.Users.Dtos;
 using System;
 using System.Collections.Generic;
 

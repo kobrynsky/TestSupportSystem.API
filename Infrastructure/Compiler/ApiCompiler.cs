@@ -11,7 +11,7 @@ namespace Infrastructure.Compiler
 {
     public class ApiCompiler : IApiCompiler
     {
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
 
         public ApiCompiler(HttpClient httpClient)
         {
@@ -20,7 +20,7 @@ namespace Infrastructure.Compiler
 
         public async Task<SubmissionResponse> SendSubmission(Submission submission)
         {
-            await RunAsync();
+            RunAsync();
             var stringContent = new StringContent(JsonConvert.SerializeObject(submission), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("submissions/?base64_encoded=false&wait=true", stringContent);
             var contents = await response.Content.ReadAsStringAsync();
@@ -28,12 +28,11 @@ namespace Infrastructure.Compiler
             return parsedResponse;
         }
 
-        private async Task RunAsync()
+        private void RunAsync()
         {
             _httpClient.DefaultRequestHeaders.Accept.Clear();
 
-            var cacheHeader = new CacheControlHeaderValue();
-            cacheHeader.NoCache = true;
+            var cacheHeader = new CacheControlHeaderValue { NoCache = true };
 
             _httpClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));

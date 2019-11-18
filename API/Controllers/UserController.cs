@@ -1,12 +1,12 @@
 ﻿using API.Security;
-using Application.User;
-using Application.User.Dtos;
+using Application.Users;
+using Application.Users.Dtos;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using List = Application.User.List;
+using List = Application.Users.List;
 
 namespace API.Controllers
 {
@@ -52,15 +52,6 @@ namespace API.Controllers
         public async Task<ActionResult<UserDetailsDto>> GetDetailsByEmail(string email)
         {
             return await Mediator.Send(new GetDetailsByEmail.Query { Email = email });
-        }
-
-
-        //endpoint for testing Roles
-        [Authorize(Roles = Role.Student)]
-        [HttpPost("test")]
-        public async Task<ActionResult<User>> Test(Login.Query query)
-        {
-            return await Mediator.Send(new CurrentUser.Query());
         }
     }
 }

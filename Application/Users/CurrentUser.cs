@@ -1,11 +1,11 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Application.User
+namespace Application.Users
 {
     public class CurrentUser
     {

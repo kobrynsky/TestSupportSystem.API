@@ -1,7 +1,7 @@
 ﻿using Application.Groups.Dtos;
 using System.Collections.Generic;
 
-namespace Application.User.Dtos
+namespace Application.Users.Dtos
 {
     public class UserDetailsDto
     {
