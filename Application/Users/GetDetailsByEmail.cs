@@ -63,7 +63,7 @@ namespace Application.Users
                         {
                             var solved = exercisesResults
                                 .Any(x => x.CorrectnessTestResults
-                                              .First(y => y.ExerciseResult.GroupId == studentGroupDto.Id).CorrectnessTest.ExerciseId == exercise.Id);
+                                              .First().CorrectnessTest.ExerciseId == exercise.Id);
                             exercise.Solved = solved;
                         }
                         catch
