@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Persistence;
 using System;
 using System.Net.Http;
@@ -87,6 +88,24 @@ namespace API
                 .AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssemblyContaining<Create>())
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddMvc(option => option.EnableEndpointRouting = false);
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("V1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Test Support System",
+                    Description = "System wspierający testy do nauki programowania online",
+                    Contact = new OpenApiContact()
+                    {
+                        Name = "Paweł Kobryński",
+                        Email = "pawelkobrynski97@gmail.com",
+                        Url = new Uri("https://www.github.com/blc132")
+                    }
+                });
+
+                c.CustomSchemaIds(i => i.FullName);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -96,6 +115,12 @@ namespace API
             app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseAuthentication();
             app.UseMvc();
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/V1/swagger.json", "API V1");
+            });
         }
     }
 }
