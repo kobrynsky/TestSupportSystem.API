@@ -20,7 +20,7 @@ namespace Infrastructure.Compiler
 
         public async Task<SubmissionResponse> SendSubmission(Submission submission)
         {
-            RunAsync();
+            SetUpHeaders();
             var stringContent = new StringContent(JsonConvert.SerializeObject(submission), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("submissions/?base64_encoded=false&wait=true", stringContent);
             var contents = await response.Content.ReadAsStringAsync();
@@ -28,7 +28,7 @@ namespace Infrastructure.Compiler
             return parsedResponse;
         }
 
-        private void RunAsync()
+        private void SetUpHeaders()
         {
             _httpClient.DefaultRequestHeaders.Accept.Clear();
 
