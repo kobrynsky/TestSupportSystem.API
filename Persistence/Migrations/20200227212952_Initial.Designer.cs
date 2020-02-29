@@ -10,8 +10,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20191026203211_ExerciseCourses")]
-    partial class ExerciseCourses
+    [Migration("20200227212952_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -95,6 +95,99 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Domain.CorrectnessTest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ExerciseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExerciseId");
+
+                    b.ToTable("CorrectnessTests");
+                });
+
+            modelBuilder.Entity("Domain.CorrectnessTestInput", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("CorrectnessTestId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CorrectnessTestId");
+
+                    b.ToTable("CorrectnessTestInputs");
+                });
+
+            modelBuilder.Entity("Domain.CorrectnessTestOutput", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("CorrectnessTestId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CorrectnessTestId");
+
+                    b.ToTable("CorrectnessTestOutputs");
+                });
+
+            modelBuilder.Entity("Domain.CorrectnessTestResult", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CompileOutput")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("CorrectnessTestId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Error")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ExerciseResultId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Memory")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Time")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CorrectnessTestId");
+
+                    b.HasIndex("ExerciseResultId");
+
+                    b.ToTable("CorrectnessTestResults");
+                });
+
             modelBuilder.Entity("Domain.Course", b =>
                 {
                     b.Property<Guid>("Id")
@@ -145,16 +238,14 @@ namespace Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("ProgrammingLanguageId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ProgrammingLanguage")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("CourseId");
-
-                    b.HasIndex("ProgrammingLanguageId");
 
                     b.ToTable("Exercises");
                 });
@@ -189,20 +280,38 @@ namespace Persistence.Migrations
                     b.ToTable("ExerciseGroups");
                 });
 
+            modelBuilder.Entity("Domain.ExerciseResult", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("StudentId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("ExerciseResults");
+                });
+
             modelBuilder.Entity("Domain.ExerciseUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("DateOfAssesment")
-                        .HasColumnType("datetime2");
-
                     b.Property<Guid>("ExerciseId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Grade")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("GroupId")
                         .HasColumnType("uniqueidentifier");
@@ -243,26 +352,6 @@ namespace Persistence.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("Groups");
-                });
-
-            modelBuilder.Entity("Domain.ProgrammingLanguage", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CompilerUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Version")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProgrammingLanguages");
                 });
 
             modelBuilder.Entity("Domain.UserGroup", b =>
@@ -411,6 +500,48 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Domain.CorrectnessTest", b =>
+                {
+                    b.HasOne("Domain.Exercise", "Exercise")
+                        .WithMany()
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.CorrectnessTestInput", b =>
+                {
+                    b.HasOne("Domain.CorrectnessTest", "CorrectnessTest")
+                        .WithMany("Inputs")
+                        .HasForeignKey("CorrectnessTestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.CorrectnessTestOutput", b =>
+                {
+                    b.HasOne("Domain.CorrectnessTest", "CorrectnessTest")
+                        .WithMany("Outputs")
+                        .HasForeignKey("CorrectnessTestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.CorrectnessTestResult", b =>
+                {
+                    b.HasOne("Domain.CorrectnessTest", "CorrectnessTest")
+                        .WithMany()
+                        .HasForeignKey("CorrectnessTestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.ExerciseResult", "ExerciseResult")
+                        .WithMany("CorrectnessTestResults")
+                        .HasForeignKey("ExerciseResultId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Domain.CourseMainLecturer", b =>
                 {
                     b.HasOne("Domain.Course", "Course")
@@ -435,12 +566,6 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Course", "Course")
                         .WithMany()
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.ProgrammingLanguage", "ProgrammingLanguage")
-                        .WithMany("Exercises")
-                        .HasForeignKey("ProgrammingLanguageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -473,6 +598,19 @@ namespace Persistence.Migrations
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.ExerciseResult", b =>
+                {
+                    b.HasOne("Domain.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.ApplicationUser", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId");
                 });
 
             modelBuilder.Entity("Domain.ExerciseUser", b =>

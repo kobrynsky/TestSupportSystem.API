@@ -62,20 +62,6 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProgrammingLanguages",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Version = table.Column<string>(nullable: true),
-                    CompilerUrl = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProgrammingLanguages", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -182,6 +168,59 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CourseMainLecturers",
+                columns: table => new
+                {
+                    CourseId = table.Column<Guid>(nullable: false),
+                    MainLecturerId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CourseMainLecturers", x => new { x.CourseId, x.MainLecturerId });
+                    table.ForeignKey(
+                        name: "FK_CourseMainLecturers_Courses_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Courses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CourseMainLecturers_AspNetUsers_MainLecturerId",
+                        column: x => x.MainLecturerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Exercises",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Content = table.Column<string>(nullable: true),
+                    InitialCode = table.Column<string>(nullable: true),
+                    ProgrammingLanguage = table.Column<string>(nullable: true),
+                    CourseId = table.Column<Guid>(nullable: false),
+                    AuthorId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Exercises", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Exercises_AspNetUsers_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Exercises_Courses_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Courses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Groups",
                 columns: table => new
                 {
@@ -201,52 +240,42 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Exercises",
+                name: "CorrectnessTests",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Content = table.Column<string>(nullable: true),
-                    InitialCode = table.Column<string>(nullable: true),
-                    CourseId = table.Column<Guid>(nullable: false),
-                    ProgrammingLanguageId = table.Column<Guid>(nullable: false)
+                    ExerciseId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Exercises", x => x.Id);
+                    table.PrimaryKey("PK_CorrectnessTests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Exercises_Courses_CourseId",
-                        column: x => x.CourseId,
-                        principalTable: "Courses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Exercises_ProgrammingLanguages_ProgrammingLanguageId",
-                        column: x => x.ProgrammingLanguageId,
-                        principalTable: "ProgrammingLanguages",
+                        name: "FK_CorrectnessTests_Exercises_ExerciseId",
+                        column: x => x.ExerciseId,
+                        principalTable: "Exercises",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserGroups",
+                name: "ExerciseCourses",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(nullable: false),
-                    GroupId = table.Column<Guid>(nullable: false)
+                    ExerciseId = table.Column<Guid>(nullable: false),
+                    CourseId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserGroups", x => new { x.UserId, x.GroupId });
+                    table.PrimaryKey("PK_ExerciseCourses", x => new { x.CourseId, x.ExerciseId });
                     table.ForeignKey(
-                        name: "FK_UserGroups_Groups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Groups",
+                        name: "FK_ExerciseCourses_Courses_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Courses",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_UserGroups_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_ExerciseCourses_Exercises_ExerciseId",
+                        column: x => x.ExerciseId,
+                        principalTable: "Exercises",
                         principalColumn: "Id");
                 });
 
@@ -273,24 +302,154 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ExerciseUsers",
+                name: "ExerciseResults",
                 columns: table => new
                 {
-                    ExerciseId = table.Column<Guid>(nullable: false),
-                    UserId = table.Column<string>(nullable: false)
+                    Id = table.Column<Guid>(nullable: false),
+                    StudentId = table.Column<string>(nullable: true),
+                    GroupId = table.Column<Guid>(nullable: false),
+                    Code = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExerciseUsers", x => new { x.ExerciseId, x.UserId });
+                    table.PrimaryKey("PK_ExerciseResults", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ExerciseResults_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ExerciseResults_AspNetUsers_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExerciseUsers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ExerciseId = table.Column<Guid>(nullable: false),
+                    StudentId = table.Column<string>(nullable: true),
+                    LecturerId = table.Column<string>(nullable: true),
+                    GroupId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExerciseUsers", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ExerciseUsers_Exercises_ExerciseId",
                         column: x => x.ExerciseId,
                         principalTable: "Exercises",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ExerciseUsers_AspNetUsers_UserId",
+                        name: "FK_ExerciseUsers_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ExerciseUsers_AspNetUsers_LecturerId",
+                        column: x => x.LecturerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ExerciseUsers_AspNetUsers_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserGroups",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(nullable: false),
+                    GroupId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserGroups", x => new { x.UserId, x.GroupId });
+                    table.ForeignKey(
+                        name: "FK_UserGroups_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UserGroups_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CorrectnessTestInputs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Content = table.Column<string>(nullable: true),
+                    CorrectnessTestId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CorrectnessTestInputs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CorrectnessTestInputs_CorrectnessTests_CorrectnessTestId",
+                        column: x => x.CorrectnessTestId,
+                        principalTable: "CorrectnessTests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CorrectnessTestOutputs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Content = table.Column<string>(nullable: true),
+                    CorrectnessTestId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CorrectnessTestOutputs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CorrectnessTestOutputs_CorrectnessTests_CorrectnessTestId",
+                        column: x => x.CorrectnessTestId,
+                        principalTable: "CorrectnessTests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CorrectnessTestResults",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ExerciseResultId = table.Column<Guid>(nullable: false),
+                    CorrectnessTestId = table.Column<Guid>(nullable: false),
+                    Time = table.Column<string>(nullable: true),
+                    Memory = table.Column<int>(nullable: false),
+                    CompileOutput = table.Column<string>(nullable: true),
+                    Message = table.Column<string>(nullable: true),
+                    Error = table.Column<string>(nullable: true),
+                    Status = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CorrectnessTestResults", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CorrectnessTestResults_CorrectnessTests_CorrectnessTestId",
+                        column: x => x.CorrectnessTestId,
+                        principalTable: "CorrectnessTests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CorrectnessTestResults_ExerciseResults_ExerciseResultId",
+                        column: x => x.ExerciseResultId,
+                        principalTable: "ExerciseResults",
                         principalColumn: "Id");
                 });
 
@@ -334,9 +493,59 @@ namespace Persistence.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CorrectnessTestInputs_CorrectnessTestId",
+                table: "CorrectnessTestInputs",
+                column: "CorrectnessTestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CorrectnessTestOutputs_CorrectnessTestId",
+                table: "CorrectnessTestOutputs",
+                column: "CorrectnessTestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CorrectnessTestResults_CorrectnessTestId",
+                table: "CorrectnessTestResults",
+                column: "CorrectnessTestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CorrectnessTestResults_ExerciseResultId",
+                table: "CorrectnessTestResults",
+                column: "ExerciseResultId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CorrectnessTests_ExerciseId",
+                table: "CorrectnessTests",
+                column: "ExerciseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseMainLecturers_MainLecturerId",
+                table: "CourseMainLecturers",
+                column: "MainLecturerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExerciseCourses_ExerciseId",
+                table: "ExerciseCourses",
+                column: "ExerciseId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ExerciseGroups_GroupId",
                 table: "ExerciseGroups",
                 column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExerciseResults_GroupId",
+                table: "ExerciseResults",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExerciseResults_StudentId",
+                table: "ExerciseResults",
+                column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Exercises_AuthorId",
+                table: "Exercises",
+                column: "AuthorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Exercises_CourseId",
@@ -344,14 +553,24 @@ namespace Persistence.Migrations
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Exercises_ProgrammingLanguageId",
-                table: "Exercises",
-                column: "ProgrammingLanguageId");
+                name: "IX_ExerciseUsers_ExerciseId",
+                table: "ExerciseUsers",
+                column: "ExerciseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExerciseUsers_UserId",
+                name: "IX_ExerciseUsers_GroupId",
                 table: "ExerciseUsers",
-                column: "UserId");
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExerciseUsers_LecturerId",
+                table: "ExerciseUsers",
+                column: "LecturerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExerciseUsers_StudentId",
+                table: "ExerciseUsers",
+                column: "StudentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Groups_CourseId",
@@ -382,6 +601,21 @@ namespace Persistence.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "CorrectnessTestInputs");
+
+            migrationBuilder.DropTable(
+                name: "CorrectnessTestOutputs");
+
+            migrationBuilder.DropTable(
+                name: "CorrectnessTestResults");
+
+            migrationBuilder.DropTable(
+                name: "CourseMainLecturers");
+
+            migrationBuilder.DropTable(
+                name: "ExerciseCourses");
+
+            migrationBuilder.DropTable(
                 name: "ExerciseGroups");
 
             migrationBuilder.DropTable(
@@ -394,6 +628,12 @@ namespace Persistence.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "CorrectnessTests");
+
+            migrationBuilder.DropTable(
+                name: "ExerciseResults");
+
+            migrationBuilder.DropTable(
                 name: "Exercises");
 
             migrationBuilder.DropTable(
@@ -401,9 +641,6 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "ProgrammingLanguages");
 
             migrationBuilder.DropTable(
                 name: "Courses");

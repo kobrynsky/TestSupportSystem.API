@@ -536,7 +536,7 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.ExerciseResult", "ExerciseResult")
                         .WithMany("CorrectnessTestResults")
                         .HasForeignKey("ExerciseResultId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 

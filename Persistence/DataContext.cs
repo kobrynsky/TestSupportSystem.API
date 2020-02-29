@@ -108,6 +108,12 @@ namespace Persistence
                 .WithOne(x => x.Exercise)
                 .HasForeignKey(x => x.ExerciseId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<CorrectnessTestResult>()
+                .HasOne(x => x.ExerciseResult)
+                .WithMany(x => x.CorrectnessTestResults)
+                .HasForeignKey(x => x.ExerciseResultId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
