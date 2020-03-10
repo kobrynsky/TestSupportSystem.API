@@ -71,7 +71,7 @@ namespace API
             identityBuilder.AddEntityFrameworkStores<DataContext>();
             identityBuilder.AddSignInManager<SignInManager<ApplicationUser>>();
 
-            var apiCompilerUri = new Uri("http://192.168.99.100:3000/");
+            var apiCompilerUri = new Uri("http://156.17.41.235:3000/");
             var httpClient = new HttpClient()
             {
                 BaseAddress = apiCompilerUri,

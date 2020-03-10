@@ -129,10 +129,10 @@ namespace Application.Exercises
             {
                 return programmingLanguage switch
                 {
-                    "C++" => 11,
-                    "C#" => 16,
-                    "Java" => 26,
-                    "Python" => 34,
+                    "C++" => 54,
+                    "C#" => 51,
+                    "Java" => 62,
+                    "Python" => 71,
                     _ => 0
                 };
             }
