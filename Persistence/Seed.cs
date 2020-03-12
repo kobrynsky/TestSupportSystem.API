@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
@@ -12,6 +13,7 @@ namespace Persistence
         public static async Task SeedData(DataContext context, UserManager<ApplicationUser> userManager)
         {
             await SeedUsers(userManager);
+            await SeedCourses(context);
         }
 
         private static async Task SeedUsers(UserManager<ApplicationUser> userManager)
@@ -35,6 +37,42 @@ namespace Persistence
                 {
                     await userManager.CreateAsync(user, "Haslo123!");
                 }
+
+            }
+        }
+
+        private static async Task SeedCourses(DataContext context)
+        {
+            var dbCourses = await context.Courses.ToListAsync();
+
+            if (!dbCourses.Any())
+            {
+                var courses = new List<Course>
+                {
+                    new Course
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Modelowanie i anal.sys.infor.",
+                    },
+                    new Course
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Podstawy Programowania",
+                    },
+                    new Course
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Programowanie Obiektowe",
+                    },
+                    new Course
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Języki Programowania",
+                    },
+                };
+
+                await context.Courses.AddRangeAsync(courses);
+                await context.SaveChangesAsync();
 
             }
         }
